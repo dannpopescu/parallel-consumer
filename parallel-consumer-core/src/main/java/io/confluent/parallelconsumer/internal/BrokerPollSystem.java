@@ -1,7 +1,7 @@
 package io.confluent.parallelconsumer.internal;
 
 /*-
- * Copyright (C) 2020-2022 Confluent, Inc.
+ * Copyright (C) 2020-2023 Confluent, Inc.
  */
 
 import io.confluent.parallelconsumer.ParallelConsumerOptions;
@@ -272,8 +272,8 @@ public class BrokerPollSystem<K, V> implements OffsetCommitter {
      */
     private void managePauseOfSubscription() {
         boolean throttle = shouldThrottle();
-        log.trace("Need to throttle: {}", throttle);
-        if (throttle) {
+        log.trace("Need to throttle: {}, state: {}", throttle, runState);
+        if (throttle || runState == DRAINING) {
             doPauseMaybe();
         } else {
             resumeIfPaused();
